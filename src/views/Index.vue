@@ -1,6 +1,10 @@
 <template>
   <div class="container">
     <h1>Admin panel</h1>
+    <router-link class="btn btn-primary" to="/places"
+      >Places</router-link
+    >
+    <!-- Forma -->
     <div class="row justify-comtent-center">
       <div class="col-12">
         <form @submit.prevent>
@@ -48,18 +52,6 @@
             Submit
           </button>
         </form>
-      </div>
-    </div>
-
-    <div class="row g-1">
-      <div class="col-md-3 border" v-for="item of datas" :key="item">
-        <h2>{{ item.title }}</h2>
-        <button
-          @click="deleteZapros(item._id)"
-          class="btn btn-danger"
-        >
-          Delete
-        </button>
       </div>
     </div>
   </div>
