@@ -133,8 +133,9 @@
           <tr>
             <th scope="col">#</th>
             <th scope="col">Title</th>
-            <th scope="col">ID</th>
-            <th scope="col">Color</th>
+            <th scope="col">Cordinata</th>
+            <th scope="col">Title lang</th>
+            <th scope="col">Adress</th>
             <th scope="col">Tahrilash</th>
             <th scope="col">O'chirish</th>
           </tr>
@@ -143,8 +144,19 @@
           <tr v-for="(item, index) of datas" :key="index">
             <th scope="row">{{ index + 1 }}</th>
             <td>{{ item.title }}</td>
-            <td>{{ item._id }}</td>
-            <td>{{ item.color }}</td>
+            <td class="white_space">
+              {{ item.cordinata[0][0] }}, {{ item.cordinata[0][1] }}
+            </td>
+            <td v-if="item.title_lang">
+              <p><b>Uz: </b>{{ item.title_lang.uz }}</p>
+              <p><b>Ru: </b>{{ item.title_lang.ru }}</p>
+              <p><b>En: </b>{{ item.title_lang.en }}</p>
+            </td>
+            <td v-if="item.address">
+              <p><b>Uz: </b>{{ item.address.uz }}</p>
+              <p><b>Ru: </b>{{ item.address.ru }}</p>
+              <p><b>En: </b>{{ item.address.en }}</p>
+            </td>
             <td>
               <button
                 @click="UpdateTitleAdressAcctive(item._id)"
@@ -318,5 +330,8 @@ export default {
 .form {
   height: 400px;
   overflow-y: auto;
+}
+.white_space {
+  white-space: nowrap;
 }
 </style>
