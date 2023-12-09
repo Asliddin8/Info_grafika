@@ -120,8 +120,8 @@
     </div>
     <!-- Modal end -->
     <h1 class="text-center">Kirgizilgan joylar</h1>
-    <router-link to="/archive" class="btn btn-primary me-4">
-      Archive
+    <router-link to="/places" class="btn btn-primary me-4">
+      Active
     </router-link>
     <!-- <button @click="UpdateAllColor" class="btn btn-primary">
       Update
@@ -199,9 +199,7 @@ export default {
   },
   created() {
     this.axios
-      .get('https://sirdaryoturizm.uz/api/cordinata/filter', {
-        params: { status: 'active' },
-      })
+      .get('https://sirdaryoturizm.uz/api/cordinata/all')
       .then((res) => {
         console.log(res);
         this.datas = res.data;

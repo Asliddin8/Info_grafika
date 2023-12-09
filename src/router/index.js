@@ -14,6 +14,13 @@ const routes = [
       return import('../views/Places.vue');
     },
   },
+  {
+    path: '/archive',
+    name: 'archive',
+    component: function () {
+      return import('../views/Archive.vue');
+    },
+  },
 ];
 
 const router = createRouter({
