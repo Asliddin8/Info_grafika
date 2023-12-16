@@ -1,128 +1,9 @@
 <template>
   <div class="container">
-    <!-- Modal -->
-    <div class="modal" tabindex="-1" :class="{ 'd-block': modal }">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Modal title</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form class="form">
-              <div class="mb-2">
-                <label
-                  for="exampleFormControlInput1"
-                  class="form-label"
-                  >Title uzbekcha {{ data.title_languz }}</label
-                >
-                <input
-                  v-model="data.title_languz"
-                  type="text"
-                  class="form-control"
-                  id="exampleFormControlInput1"
-                  placeholder="Title uzbekcha"
-                  :class="!title_languzIsValid ? 'border-danger' : ''"
-                />
-              </div>
-              <div class="mb-2">
-                <label
-                  for="exampleFormControlInput1"
-                  class="form-label"
-                  >Title Ruscha</label
-                >
-                <input
-                  v-model="data.title_langru"
-                  type="text"
-                  class="form-control"
-                  id="exampleFormControlInput1"
-                  placeholder="Title Ruscha"
-                  :class="!title_langruIsValid ? 'border-danger' : ''"
-                />
-              </div>
-              <div class="mb-2">
-                <label
-                  for="exampleFormControlInput1"
-                  class="form-label"
-                  >Title Inglizcha</label
-                >
-                <input
-                  v-model="data.title_langen"
-                  type="text"
-                  class="form-control"
-                  id="exampleFormControlInput1"
-                  placeholder="Title Inglizcha"
-                  :class="!title_langenIsValid ? 'border-danger' : ''"
-                />
-              </div>
-              <div class="mb-2">
-                <label
-                  for="exampleFormControlInput1"
-                  class="form-label"
-                  >Adress uzbekcha</label
-                >
-                <input
-                  v-model="data.addressuz"
-                  type="text"
-                  class="form-control"
-                  id="exampleFormControlInput1"
-                  placeholder="Adress uzbekcha"
-                  :class="!addressuzIsValid ? 'border-danger' : ''"
-                />
-              </div>
-              <div class="mb-2">
-                <label
-                  for="exampleFormControlInput1"
-                  class="form-label"
-                  >Adress Ruscha</label
-                >
-                <input
-                  v-model="data.addressru"
-                  type="text"
-                  class="form-control"
-                  id="exampleFormControlInput1"
-                  placeholder="Adress uzbekcha"
-                  :class="!addressruIsValid ? 'border-danger' : ''"
-                />
-              </div>
-              <div class="mb-2">
-                <label
-                  for="exampleFormControlInput1"
-                  class="form-label"
-                  >Adress Inglizcha</label
-                >
-                <input
-                  v-model="data.addressen"
-                  type="text"
-                  class="form-control"
-                  id="exampleFormControlInput1"
-                  placeholder="Adress uzbekcha"
-                  :class="!addressenIsValid ? 'border-danger' : ''"
-                />
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              @click="UpdateTitleAdress"
-              class="btn btn-primary"
-            >
-              Save changes
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Modal end -->
-    <h1 class="text-center">Kirgizilgan joylar</h1>
-    <router-link to="/archive" class="btn btn-primary me-4">
-      Archive
-    </router-link>
+    <h1 class="text-center my-3 fs-3 fw-bolder">
+      Kirgizilgan joylar
+    </h1>
+
     <!-- <button @click="UpdateAllColor" class="btn btn-primary">
       Update
     </button> -->
@@ -132,10 +13,10 @@
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Title</th>
-            <th scope="col">Cordinata</th>
-            <th scope="col">Title lang</th>
+            <th scope="col">Joy nomi</th>
             <th scope="col">Adress</th>
+            <!-- <th scope="col">Kordinata</th> -->
+            <th scope="col">Rang</th>
             <th scope="col">Tahrilash</th>
             <th scope="col">O'chirish</th>
           </tr>
@@ -143,10 +24,6 @@
         <tbody>
           <tr v-for="(item, index) of datas" :key="index">
             <th scope="row">{{ index + 1 }}</th>
-            <td>{{ item.title }}</td>
-            <td class="white_space">
-              {{ item.cordinata[0][0] }}, {{ item.cordinata[0][1] }}
-            </td>
             <td v-if="item.title_lang">
               <p><b>Uz: </b>{{ item.title_lang.uz }}</p>
               <p><b>Ru: </b>{{ item.title_lang.ru }}</p>
@@ -158,19 +35,29 @@
               <p><b>En: </b>{{ item.address.en }}</p>
             </td>
             <td>
-              <button
-                @click="UpdateTitleAdressAcctive(item._id)"
+              <div
+                class="color_card rounded-[5px] m-1"
+                :style="`background: ${item.color};`"
+              ></div>
+            </td>
+            <!-- <td class="white_space">
+              {{ item.cordinata[0][0] }}, {{ item.cordinata[0][1] }}
+            </td> -->
+
+            <td>
+              <router-link
+                :to="`placesedit/${item._id}`"
                 class="btn btn-warning"
               >
-                Edit
-              </button>
+                Tahrirlash
+              </router-link>
             </td>
             <td>
               <button
                 @click="UpdateStatus(item._id)"
                 class="btn btn-danger"
               >
-                Delete
+                O'chirish
               </button>
             </td>
           </tr>
@@ -297,8 +184,9 @@ export default {
           data
         )
         .then((res) => {
-          console.log(res.data);
-          // window.location.reload();
+          if (res.data.success) {
+            window.location.reload();
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -307,7 +195,7 @@ export default {
     UpdateTitleAdressAcctive(id) {
       this.modal = true;
       this.putid = id;
-      let joy = this.datas.find((item) => item_id == id);
+      let joy = this.datas.find((item) => item._id == id);
       console.log(joy);
     },
     UpdateTitleAdress() {
@@ -354,5 +242,10 @@ export default {
 }
 .white_space {
   white-space: nowrap;
+}
+.color_card{
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
 }
 </style>

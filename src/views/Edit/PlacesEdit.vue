@@ -1,10 +1,6 @@
 <template>
   <div class="container">
-    <h1 class="text-center my-3 fs-3 fw-bolder">
-      Yangi joy kiritish xaritaga
-    </h1>
-    <a class="me-3 text-primary" href="https://yandex.com/maps/21605/gulistan/?ll=68.775525%2C40.498302&z=12" target="_blank">Yandex map dan yangi joyni tanlang</a>
-    <a class="me-3 text-primary" href="https://geojson.io/#new&map=13.61/40.49204/68.77097" target="_blank">Xarita chizish</a>
+    <h1 class="text-center my-3 fs-3 fw-bolder">Tahrirlash</h1>
     <!-- Forma -->
     <div class="row my-5 justify-comtent-center">
       <div class="col-12">
@@ -130,6 +126,12 @@
             <label for="exampleFormControlInput1" class="form-label"
               >Cordinatani rangini tanlang</label
             >
+            <h1>Tanlangan rang</h1>
+            <div
+              class="color_card rounded-[5px] m-1 cursor-pointer flex justify-center items-center"
+              :style="`background: ${color};`"
+            ></div>
+            <h1>Yangi rang tanlang</h1>
             <div class="flex flex-wrap">
               <div
                 class="color_card rounded-[5px] m-1 cursor-pointer flex justify-center items-center"
@@ -203,6 +205,7 @@ export default {
       checkedActive: null,
       color: null,
       subject: null,
+      paramsID: this.$route.params.id,
     };
   },
   computed: {
@@ -244,23 +247,51 @@ export default {
       );
     },
   },
+  created() {
+    this.axios
+      .get('https://sirdaryoturizm.uz/api/cordinata/all')
+      .then((res) => {
+        let selectedData = res.data.find(
+          (item) => item._id == this.paramsID
+        );
+        this.data.title_languz = selectedData.title_lang.uz;
+        this.data.title_langen = selectedData.title_lang.en;
+        this.data.title_langru = selectedData.title_lang.ru;
+        this.data.addressuz = selectedData.address.uz;
+        this.data.addressen = selectedData.address.en;
+        this.data.addressru = selectedData.address.ru;
+        this.data.cordinata = selectedData.cordinata;
+        this.color = selectedData.color;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
   methods: {
     selectElement(index, id) {
       this.checkedActive = index;
       this.color = id;
     },
     addCordinata() {
+      let array = [];
       // Remove unnecessary whitespace and newlines
-      const cleanedInput = this.data.cordinata.replace(/,\s*]/g, ']');
+      if (this.data.cordinata.indexOf(' ') == -1) {
+        array = this.data.cordinata;
+      } else {
+        const cleanedInput = this.data.cordinata.replace(
+          /,\s*]/g,
+          ']'
+        );
 
-      const array = JSON.parse(cleanedInput);
+        array = JSON.parse(cleanedInput);
 
-      for (let i = 0; i < array.length; i++) {
-        let temp = array[i][0];
-        array[i][0] = array[i][1];
-        array[i][1] = temp;
+        for (let i = 0; i < array.length; i++) {
+          let temp = array[i][0];
+          array[i][0] = array[i][1];
+          array[i][1] = temp;
+        }
+        console.log(array);
       }
-      // console.log(array);
 
       let data = {
         title: this.data.title_languz,
@@ -275,22 +306,14 @@ export default {
       };
       console.log(data);
       this.axios
-        .post('https://sirdaryoturizm.uz/api/cordinata/create', data)
+        .put(
+          'https://sirdaryoturizm.uz/api/cordinata/' + this.paramsID,
+          data
+        )
         .then((res) => {
           if (res.data.success) {
             this.$router.push('/places');
           }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-    deleteZapros(id) {
-      this.axios
-        .delete('https://sirdaryoturizm.uz/api/cordinata/' + id)
-        .then((res) => {
-          console.log(res);
-          window.location.reload();
         })
         .catch((err) => {
           console.log(err);

@@ -287,7 +287,7 @@ export default {
     },
     UpdateStatus(id) {
       let data = {
-        status: 'archive',
+        status: 'active',
       };
       this.axios
         .put(
